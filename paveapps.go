@@ -37,7 +37,7 @@ func BytesToOffset(b []byte) Offset {
 }
 
 // Marshal struct to byte slice and store in linear memory, returning the Offset
-func StructToMemory(v interface{}) (o Offset, err error) {
+func StructToOffset(v interface{}) (o Offset, err error) {
 	b, err := json.Marshal(&v)
 
 	if err != nil {
