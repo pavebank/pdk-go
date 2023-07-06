@@ -6,45 +6,49 @@ import (
 	"github.com/extism/go-pdk"
 )
 
-type Memory struct {
-	pdk.Memory
-}
+// Offset type is a uint64 type
+// Offset to the location in linear memory where allocations begins
+type Offset uint64
 
+// Unmarshal PaveApps Trigger handler input into struct
 func Input(v interface{}) error {
 	input := pdk.Input()
 	return json.Unmarshal(input, &v)
 }
 
-func MemoryToBytes(mem Memory) []byte {
+// Return the byte slices based on the Offset in linear memory
+func OffsetToBytes(o Offset) []byte {
+	mem := pdk.FindMemory(uint64(o))
 	buf := make([]byte, mem.Length())
 	mem.Load(buf)
 	return buf
 }
 
-func MemoryToStruct(mem Memory, v interface{}) error {
-	bytes := MemoryToBytes(mem)
+// Unmarshal data in linear memory into struct based on Offset
+func OffsetToStruct(o Offset, v interface{}) error {
+	bytes := OffsetToBytes(o)
 	return json.Unmarshal(bytes, &v)
 }
 
-func BytesToMemory(b []byte) Memory {
-	return Memory{pdk.AllocateBytes(b)}
+// Allocate and store bytes in linear memory, and return the Offset to that allocation
+func BytesToOffset(b []byte) Offset {
+	mem := pdk.AllocateBytes(b)
+	return Offset(mem.Offset())
 }
 
-func FindMemory(offset uint64) Memory {
-	return Memory{pdk.FindMemory(offset)}
-}
-
-func StructToMemory(v interface{}) (mem Memory, err error) {
+// Marshal struct to byte slice and store in linear memory, returning the Offset
+func StructToMemory(v interface{}) (o Offset, err error) {
 	b, err := json.Marshal(&v)
 
 	if err != nil {
 		return
 	}
 
-	mem = BytesToMemory(b)
+	o = BytesToOffset(b)
 	return
 }
 
+// Get config that is stored during creation of PaveApps
 func GetConfig(key string) (string, bool) {
 	return pdk.GetConfig(key)
 }
