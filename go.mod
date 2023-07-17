@@ -1,4 +1,4 @@
-module github.com/pavebank/paveapps
+module github.com/pavebank/pdk-go
 
 go 1.20
 
