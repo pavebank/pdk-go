@@ -20,6 +20,10 @@ func Input(v interface{}) error {
 // ToArgs function that takes in pointer and transforms it to Args
 // Accepts *[]byte and struct{} type only
 func ToArgs(input interface{}) (Args, error) {
+	if input == nil {
+		return 0, fmt.Errorf("Input is null")
+	}
+
 	switch v := input.(type) {
 	case *[]byte:
 		return bytesToArgs(*v), nil
@@ -37,6 +41,10 @@ func ToArgs(input interface{}) (Args, error) {
 // FromArgs function that takes in pointer and returns data back
 // Accepts *[]byte and struct{} type only
 func FromArgs(a Args, v interface{}) error {
+	if v == nil {
+		return fmt.Errorf("Input is null")
+	}
+
 	switch v := v.(type) {
 	case *[]byte:
 		*v = argsToBytes(a)
