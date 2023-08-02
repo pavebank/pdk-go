@@ -11,9 +11,13 @@ import (
 type Args uint64
 
 // Unmarshal PaveApps Trigger handler input into struct
-func Input(v interface{}) error {
-	input := pdk.Input()
-	return json.Unmarshal(input, &v)
+func InputStruct(v interface{}) error {
+	return json.Unmarshal(InputByte(), &v)
+}
+
+// Unmarshal PaveApps Trigger handler input into byte slice
+func InputByte() []byte {
+	return pdk.Input()
 }
 
 // Return the byte slices based on the Args in linear memory
